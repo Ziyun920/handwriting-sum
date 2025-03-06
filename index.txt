@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handwriting Sum</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/tesseract.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .upload-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+        }
+        .upload-label:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Handwriting Sum Calculator</h2>
+        <label for="fileInput" class="upload-label">Upload Image</label>
+        <input type="file" id="fileInput" accept="image/*">
+        <div class="result" id="result">Total: 0</div>
+        <button class="btn" onclick="processImage()">Calculate</button>
+    </div>
+    
+    <script>
+        function processImage() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                alert('Please upload an image first.');
+                return;
+            }
+            
+            const imageFile = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function (event) {
+                const imageUrl = event.target.result;
+                Tesseract.recognize(
+                    imageUrl,
+                    'eng',
+                    {
+                        logger: m => console.log(m)
+                    }
+                ).then(({ data: { text } }) => {
+                    const numbers = text.match(/\d+/g) || [];
+                    const total = numbers.reduce((sum, num) => sum + parseInt(num, 10), 0);
+                    document.getElementById('result').innerText = 'Total: ' + total;
+                });
+            };
+            
+            reader.readAsDataURL(imageFile);
+        }
+    </script>
+</body>
+</html>
