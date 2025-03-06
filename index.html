@@ -3,51 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>手写识别计算器</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/tesseract.min.js"></script>
+    <title>Handwriting Sum</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .upload-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+        }
+        .upload-label:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
 <body>
-    <h2>拍照识别手写数字并计算总和</h2>
-    
-    <!-- 摄像头 -->
-    <video id="video" width="300" height="200" autoplay></video>
-    <button onclick="capture()">📷 拍照</button>
-    
-    <!-- 画布 -->
-    <canvas id="canvas" width="300" height="200" style="display:none;"></canvas>
-    
-    <!-- 结果 -->
-    <h3>识别结果：</h3>
-    <p id="result">等待识别...</p>
-    <h3>总和：</h3>
-    <p id="sum">0</p>
-
-    <script>
-        // 开启摄像头
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                document.getElementById("video").srcObject = stream;
-            });
-
-        function capture() {
-            let video = document.getElementById("video");
-            let canvas = document.getElementById("canvas");
-            let ctx = canvas.getContext("2d");
-            
-            // 拍照并显示
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // 识别手写数字
-            Tesseract.recognize(canvas, 'eng')
-                .then(({ data: { text } }) => {
-                    document.getElementById("result").innerText = text;
-                    
-                    // 计算总和
-                    let numbers = text.match(/\d+/g);  // 取出所有数字
-                    let total = numbers ? numbers.map(Number).reduce((a, b) => a + b, 0) : 0;
-                    document.getElementById("sum").innerText = total;
-                });
-        }
-    </script>
+    <div class="container">
+        <h2>Handwriting Sum Calculator</h2>
+        <label for="fileInput" class="upload-label">Upload Image</label>
+        <input type="file" id="fileInput" accept="image/*">
+        <div class="result" id="result">Total: 0</div>
+        <button class="btn">Calculate</button>
+    </div>
 </body>
 </html>
